@@ -1,24 +1,15 @@
 import * as React from "react";
 import Container from "@mui/material/Container";
 import Card from "@mui/material/Card";
-import CardActions from "@mui/material/CardActions";
 import CardContent from "@mui/material/CardContent";
 import Button from "@mui/material/Button";
 import Typography from "@mui/material/Typography";
 import Divider from "@mui/material/Divider";
 import ToggleButton from "@mui/material/ToggleButton";
 import ToggleButtonGroup from "@mui/material/ToggleButtonGroup";
-// import Grid from "@mui/material/Unstable_Grid2";
 import Grid from "@mui/material/Grid";
 
 import TextField from "@mui/material/TextField";
-import { v4 as uuidv4 } from "uuid";
-
-// ICONS
-import FormatAlignLeftIcon from "@mui/icons-material/FormatAlignLeft";
-import FormatAlignCenterIcon from "@mui/icons-material/FormatAlignCenter";
-import FormatAlignRightIcon from "@mui/icons-material/FormatAlignRight";
-import FormatAlignJustifyIcon from "@mui/icons-material/FormatAlignJustify";
 
 // Components
 import Todo from "./Todo";
@@ -33,10 +24,8 @@ import DialogTitle from "@mui/material/DialogTitle";
 // OTHERS
 import { useTodos, useTodosDispatch } from "../contexts/todosContext";
 import { useToast } from "../contexts/ToastContext";
-import { useState, useEffect, useMemo, useReducer } from "react";
-import todosReducer from "../reducers/todosReducer";
+import { useState, useEffect, useMemo } from "react";
 
-// import { TodosContext } from "../contexts/todosContext";
 export default function TodoList() {
   console.log("re render");
 
@@ -68,7 +57,7 @@ export default function TodoList() {
 
   let todosToBeRendered = todos;
 
-  if (displayedTodosType == "completed") {
+  if (displayedTodosType === "completed") {
     todosToBeRendered = completedTodos;
   } else if (displayedTodosType == "non-completed") {
     todosToBeRendered = notCompletedTodos;
@@ -88,7 +77,7 @@ export default function TodoList() {
   function handleAddClick() {
     dispatch({ type: "added", payload: { newTitle: titleInput } });
     setTitleInput("");
-    showHideToast("تمت الإضافة بنجاح");
+    showHideToast("Added successfully");
   }
 
   function openDeleteDialog(todo) {
@@ -108,7 +97,7 @@ export default function TodoList() {
   function handleDeleteConfirm() {
     dispatch({ type: "deleted", payload: dialogTodo });
     setShowDeleteDialog(false);
-    showHideToast("تم الحذف بنجاح");
+    showHideToast("Deleted successfully");
   }
 
   function handleUpdateClose() {
@@ -118,7 +107,7 @@ export default function TodoList() {
   function handleUpdateConfirm() {
     dispatch({ type: "updated", payload: dialogTodo });
     setShowUpdateDialog(false);
-    showHideToast("تم التحديث بنجاح");
+    showHideToast("Updated successfully");
   }
 
   const todosJsx = todosToBeRendered.map((t) => {
@@ -143,17 +132,17 @@ export default function TodoList() {
         aria-describedby="alert-dialog-description"
       >
         <DialogTitle id="alert-dialog-title">
-          هل أنت متأكد من رغبتك في حذف المهمة؟
+          Are you sure wants to delete this task?
         </DialogTitle>
         <DialogContent>
           <DialogContentText id="alert-dialog-description">
-            لا يمكنك التراجع عن الحذف بعد إتمامه
+            You can't undo the deletion.
           </DialogContentText>
         </DialogContent>
         <DialogActions>
-          <Button onClick={handleDeleteDialogClose}>إغلاق</Button>
+          <Button onClick={handleDeleteDialogClose}>Close</Button>
           <Button autoFocus onClick={handleDeleteConfirm}>
-            نعم، قم بالحذف
+            Yes, delete it.
           </Button>
         </DialogActions>
       </Dialog>
@@ -161,19 +150,18 @@ export default function TodoList() {
 
       {/* UPDATE DIALOG */}
       <Dialog
-        style={{ direction: "rtl" }}
         onClose={handleUpdateClose}
         open={showUpdateDialog}
         aria-labelledby="alert-dialog-title"
         aria-describedby="alert-dialog-description"
       >
-        <DialogTitle id="alert-dialog-title">تعديل مهمة</DialogTitle>
+        <DialogTitle id="alert-dialog-title">Edit task</DialogTitle>
         <DialogContent>
           <TextField
             autoFocus
             margin="dense"
             id="name"
-            label="عنوان المهمة"
+            label="task title"
             fullWidth
             variant="standard"
             value={dialogTodo?.title}
@@ -189,7 +177,7 @@ export default function TodoList() {
             autoFocus
             margin="dense"
             id="name"
-            label="التفاصيل"
+            label="details"
             fullWidth
             variant="standard"
             value={dialogTodo?.details}
@@ -202,9 +190,9 @@ export default function TodoList() {
           />
         </DialogContent>
         <DialogActions>
-          <Button onClick={handleUpdateClose}>إغلاق</Button>
+          <Button onClick={handleUpdateClose}>Close</Button>
           <Button autoFocus onClick={handleUpdateConfirm}>
-            تأكيد
+            Confim
           </Button>
         </DialogActions>
       </Dialog>
@@ -220,7 +208,7 @@ export default function TodoList() {
         >
           <CardContent>
             <Typography variant="h2" style={{ fontWeight: "bold" }}>
-              مهامي
+              Tasks
             </Typography>
             <Divider />
 
@@ -233,9 +221,9 @@ export default function TodoList() {
               aria-label="text alignment"
               color="primary"
             >
-              <ToggleButton value="non-completed">غير المنجز</ToggleButton>
-              <ToggleButton value="completed">المنجز</ToggleButton>
-              <ToggleButton value="all">الكل</ToggleButton>
+              <ToggleButton value="non-completed">Unfinished </ToggleButton>
+              <ToggleButton value="completed">Finished</ToggleButton>
+              <ToggleButton value="all">All</ToggleButton>
             </ToggleButtonGroup>
             {/* ==== FILTER BUTTON ==== */}
 
@@ -254,7 +242,7 @@ export default function TodoList() {
                 <TextField
                   style={{ width: "100%" }}
                   id="outlined-basic"
-                  label="عنوان المهمة"
+                  label="task title "
                   variant="outlined"
                   value={titleInput}
                   onChange={(e) => {
@@ -275,9 +263,9 @@ export default function TodoList() {
                   onClick={() => {
                     handleAddClick();
                   }}
-                  disabled={titleInput.length == 0}
+                  disabled={titleInput.length === 0}
                 >
-                  إضافة
+                  Add
                 </Button>
               </Grid>
             </Grid>
